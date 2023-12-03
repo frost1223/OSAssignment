@@ -94,42 +94,75 @@ void trap_and_emulate(void) {
 
     if (funct3 == 0x0 && uimm == 0X102){
 
-        if (vm_state.exec_mode == S_MODE || vm_state.exec_mode == M_MODE){
-        int nexec = (vm_state.sstatus.val >> 8) & 0x1;
+        // if (vm_state.exec_mode == S_MODE || vm_state.exec_mode == M_MODE){
+        // int nexec = (vm_state.sstatus.val >> 8) & 0x1;
 
-        vm_state.sstatus.val = vm_state.sstatus.val & (~SPP_FL);
+        // vm_state.sstatus.val = vm_state.sstatus.val & (~SPP_FL);
 
-        uint64 SPIE_bit = vm_state.mstatus.val & SPIE_FL;
-        vm_state.sstatus.val = vm_state.sstatus.val & (~SIE_FL);
-        vm_state.sstatus.val = vm_state.sstatus.val & (~SPIE_FL);
-        vm_state.sstatus.val = vm_state.sstatus.val | (SPIE_bit >> 4);
+        // uint64 SPIE_bit = vm_state.mstatus.val & SPIE_FL;
+        // vm_state.sstatus.val = vm_state.sstatus.val & (~SIE_FL);
+        // vm_state.sstatus.val = vm_state.sstatus.val & (~SPIE_FL);
+        // vm_state.sstatus.val = vm_state.sstatus.val | (SPIE_bit >> 4);
 
-        p->trapframe->epc = vm_state.sepc.val;
+        // p->trapframe->epc = vm_state.sepc.val;
 
-        vm_state.exec_mode = nexec;
+        // vm_state.exec_mode = nexec;
+
+    if (vm_state.exec_mode >= S_MODE){
+        int new_mode = (vm_state.totalregs[8].val >> 8) & 0x1;
+
+        vm_state.totalregs[8].val &= (~SPP_FL);
+
+        uint64 SPIE_bit =  vm_state.totalregs[24].val & SPIE_FL;
+
+         vm_state.totalregs[8].val |= (SPIE_bit) << 1;
+
+         vm_state.totalregs[8].val &= (1) << 5;
+        p->trapframe->epc =  vm_state.totalregss[15].val;
+
+         vm_state.exec_mode = new_mode;
+    } else {
+        setkilled(p);
+    }
         // /* Print the statement */
         // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
         //         addr, op, rd, funct3, rs1, uimm);
     }
         
     }else if (funct3 == 0x0 && uimm == 0x302){
-        if (vm_state.exec_mode >= M_MODE){
-        int nexec = (vm_state.mstatus.val >> 11) & 0x1;
+        // if (vm_state.exec_mode >= M_MODE){
+        // int nexec = (vm_state.mstatus.val >> 11) & 0x1;
 
-        vm_state.mstatus.val = vm_state.mstatus.val & (~MPP_FL);
+        // vm_state.mstatus.val = vm_state.mstatus.val & (~MPP_FL);
 
-        uint64 MPIE_bit = vm_state.mstatus.val & MPIE_FL;
-        vm_state.mstatus.val = vm_state.mstatus.val & (~MIE_FL);
-        vm_state.mstatus.val = vm_state.mstatus.val & (~MPIE_FL);
-        vm_state.mstatus.val = vm_state.mstatus.val | (MPIE_bit >> 4);
+        // uint64 MPIE_bit = vm_state.mstatus.val & MPIE_FL;
+        // vm_state.mstatus.val = vm_state.mstatus.val & (~MIE_FL);
+        // vm_state.mstatus.val = vm_state.mstatus.val & (~MPIE_FL);
+        // vm_state.mstatus.val = vm_state.mstatus.val | (MPIE_bit >> 4);
 
-        p->trapframe->epc = vm_state.mepc.val;
+        // p->trapframe->epc = vm_state.mepc.val;
 
-        vm_state.exec_mode = nexec;
+        // vm_state.exec_mode = nexec;
+
+            if (vm_state.exec_mode >= M_MODE){
+                int new_mode = (vm_state.totalregs[24].val >> 11) & 0x1;
+
+                vm_state.totalregs[24].val &= (~MPP_FL);
+
+                uint64 MPIE_bit = vm.regs[24].val & MPIE_FL;
+                 vm_state.totalregs[24].val |= (MPIE_bit) << 3;
+                 vm_state.totalregss[24].val &= (1) << 7;
+                 vm_state.totalregs[24].val &= ~(1 << 17);
+                p->trapframe->epc = v vm_state.totalregs[32].val;
+                 vm_state.exec_mode = new_mode;
+
+    } else {
+        setkilled(p);
+    }
         // /* Print the statement */
         // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
         //         addr, op, rd, funct3, rs1, uimm);
-        }
+        // }
 
     }else if (funct3 == 0x1) {
         //csrw
