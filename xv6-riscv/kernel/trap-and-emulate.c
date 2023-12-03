@@ -67,7 +67,7 @@ void trap_and_emulate_ecall() {
     // vm_state.exec_mode = S_MODE;
 
     vm_state.totalregs[14].val = p->trapframe->epc;
-    p->trapframe->epc = vm_reg.totalregs[12].val;
+    p->trapframe->epc = vm_state.totalregs[12].val;
     vm_state.exec_mode = S_MODE;
 }
 
