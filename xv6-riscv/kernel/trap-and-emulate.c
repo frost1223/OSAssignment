@@ -149,11 +149,11 @@ void trap_and_emulate(void) {
 
                 vm_state.totalregs[24].val &= (~MPP_FL);
 
-                uint64 MPIE_bit = vm.regs[24].val & MPIE_FL;
+                uint64 MPIE_bit = vm_state.totalregs[24].val & MPIE_FL;
                  vm_state.totalregs[24].val |= (MPIE_bit) << 3;
-                 vm_state.totalregss[24].val &= (1) << 7;
+                 vm_state.totalregs[24].val &= (1) << 7;
                  vm_state.totalregs[24].val &= ~(1 << 17);
-                p->trapframe->epc = v vm_state.totalregs[32].val;
+                p->trapframe->epc = vm_state.totalregs[32].val;
                  vm_state.exec_mode = new_mode;
 
     } else {
