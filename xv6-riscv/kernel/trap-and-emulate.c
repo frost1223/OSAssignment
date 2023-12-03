@@ -118,7 +118,7 @@ void trap_and_emulate(void) {
          vm_state.totalregs[8].val |= (SPIE_bit) << 1;
 
          vm_state.totalregs[8].val &= (1) << 5;
-        p->trapframe->epc =  vm_state.totalregss[15].val;
+        p->trapframe->epc =  vm_state.totalregs[15].val;
 
          vm_state.exec_mode = new_mode;
     } else {
@@ -127,7 +127,7 @@ void trap_and_emulate(void) {
         // /* Print the statement */
         // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
         //         addr, op, rd, funct3, rs1, uimm);
-    }
+
         
     }else if (funct3 == 0x0 && uimm == 0x302){
         // if (vm_state.exec_mode >= M_MODE){
