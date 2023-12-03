@@ -137,31 +137,31 @@ void trap_and_emulate(void) {
 
         
     }else if (funct3 == 0x0 && uimm == 0x302){
-        if (vm_state.exec_mode >= M_MODE){
-        int nexec = (vm_state.totalregs[24].val >> 11) & 0x1;
+        // if (vm_state.exec_mode >= M_MODE){
+        // int nexec = (vm_state.totalregs[24].val >> 11) & 0x1;
 
-        vm_state.totalregs[24].val = vm_state.totalregs[24].val & (~MPP_FL);
+        // vm_state.totalregs[24].val = vm_state.totalregs[24].val & (~MPP_FL);
 
-        uint64 MPIE_bit = vm_state.totalregs[24].val & MPIE_FL;
-        vm_state.totalregs[24].val = vm_state.totalregs[24].val & (~MIE_FL);
-        vm_state.totalregs[24].val = vm_state.totalregs[24].val & (~MPIE_FL);
-        vm_state.totalregs[24].val = vm_state.totalregs[24].val | (MPIE_bit >> 4);
+        // uint64 MPIE_bit = vm_state.totalregs[24].val & MPIE_FL;
+        // vm_state.totalregs[24].val = vm_state.totalregs[24].val & (~MIE_FL);
+        // vm_state.totalregs[24].val = vm_state.totalregs[24].val & (~MPIE_FL);
+        // vm_state.totalregs[24].val = vm_state.totalregs[24].val | (MPIE_bit >> 4);
 
-        p->trapframe->epc = vm_state.totalregs[30].val;
+        // p->trapframe->epc = vm_state.totalregs[30].val;
 
-        vm_state.exec_mode = nexec;
+        // vm_state.exec_mode = nexec;
 
-            // if (vm_state.exec_mode >= M_MODE){
-            //     int new_mode = (vm_state.totalregs[24].val >> 11) & 0x1;
+            if (vm_state.exec_mode >= M_MODE){
+                int new_mode = (vm_state.totalregs[24].val >> 11) & 0x1;
 
-            //     vm_state.totalregs[24].val &= (~MPP_FL);
+                vm_state.totalregs[24].val &= (~MPP_FL);
 
-            //     uint64 MPIE_bit = vm_state.totalregs[24].val & MPIE_FL;
-            //      vm_state.totalregs[24].val |= (MPIE_bit) << 3;
-            //      vm_state.totalregs[24].val &= (1) << 7;
-            //      vm_state.totalregs[24].val &= ~(1 << 17);
-            //     p->trapframe->epc = vm_state.totalregs[30].val;
-            //      vm_state.exec_mode = new_mode;
+                uint64 MPIE_bit = vm_state.totalregs[24].val & MPIE_FL;
+                 vm_state.totalregs[24].val |= (MPIE_bit) << 3;
+                 vm_state.totalregs[24].val &= (1) << 7;
+                 vm_state.totalregs[24].val &= ~(1 << 17);
+                p->trapframe->epc = vm_state.totalregs[30].val;
+                 vm_state.exec_mode = new_mode;
 
     } else {
         setkilled(p);
