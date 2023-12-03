@@ -182,7 +182,7 @@ void trap_and_emulate(void) {
                 uint64* bp = rs1 + &(p->trapframe->ra) - 1;
                 vm_state.totalregs[i].val = (*bp);
 
-                if (*rs1_pointer == 0x0 && vm_state.totalregs[i].code == 0xF11) {
+                if (*bp == 0x0 && vm_state.totalregs[i].code == 0xF11) {
                     printf("Killing VM due to mvendorid being set to 0x0\n");
                     setkilled(p);
                 }
