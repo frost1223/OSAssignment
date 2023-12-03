@@ -98,36 +98,36 @@ void trap_and_emulate(void) {
 
     if (funct3 == 0x0 && uimm == 0X102){
 
-        // if (vm_state.exec_mode == S_MODE || vm_state.exec_mode == M_MODE){
-        // int nexec = (vm_state.sstatus.val >> 8) & 0x1;
+        if (vm_state.exec_mode == S_MODE || vm_state.exec_mode == M_MODE){
+        int nexec = (vm_state.totalregs[8].val >> 8) & 0x1;
 
-        // vm_state.sstatus.val = vm_state.sstatus.val & (~SPP_FL);
+        vm_state.totalregs[8].val = vm_state.totalregs[8].val & (~SPP_FL);
 
-        // uint64 SPIE_bit = vm_state.mstatus.val & SPIE_FL;
-        // vm_state.sstatus.val = vm_state.sstatus.val & (~SIE_FL);
-        // vm_state.sstatus.val = vm_state.sstatus.val & (~SPIE_FL);
-        // vm_state.sstatus.val = vm_state.sstatus.val | (SPIE_bit >> 4);
+        uint64 SPIE_bit = vm_state.totalregs[24].val & SPIE_FL;
+        vm_state.totalregs[8].val = vm_state.totalregs[8].val & (~SIE_FL);
+        vm_state.totalregs[8].val = vm_state.totalregs[8].val & (~SPIE_FL);
+        vm_state.totalregs[8].val = vm_state.totalregs[8].val | (SPIE_bit >> 4);
 
-        // p->trapframe->epc = vm_state.sepc.val;
+        p->trapframe->epc = vm_state.totalregs[14].val;
 
-        // vm_state.exec_mode = nexec;
+        vm_state.exec_mode = nexec;
 
-    if (vm_state.exec_mode >= S_MODE){
-        int new_mode = (vm_state.totalregs[8].val >> 8) & 0x1;
+    // if (vm_state.exec_mode >= S_MODE){
+    //     int new_mode = (vm_state.totalregs[8].val >> 8) & 0x1;
 
-        vm_state.totalregs[8].val &= (~SPP_FL);
+    //     vm_state.totalregs[8].val &= (~SPP_FL);
 
-        uint64 SPIE_bit =  vm_state.totalregs[24].val & SPIE_FL;
+    //     uint64 SPIE_bit =  vm_state.totalregs[24].val & SPIE_FL;
 
-         vm_state.totalregs[8].val |= (SPIE_bit) << 1;
+    //      vm_state.totalregs[8].val |= (SPIE_bit) << 1;
 
-         vm_state.totalregs[8].val &= (1) << 5;
-        p->trapframe->epc =  vm_state.totalregs[14].val;
+    //      vm_state.totalregs[8].val &= (1) << 5;
+    //     p->trapframe->epc =  vm_state.totalregs[14].val;
 
-         vm_state.exec_mode = new_mode;
-    } else {
-        setkilled(p);
-    }
+    //      vm_state.exec_mode = new_mode;
+    // } else {
+    //     setkilled(p);
+    // }
         // /* Print the statement */
         // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
         //         addr, op, rd, funct3, rs1, uimm);
