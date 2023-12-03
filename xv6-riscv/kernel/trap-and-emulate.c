@@ -75,14 +75,14 @@ void trap_and_emulate(void) {
     /* Comes here when a VM tries to execute a supervisor instruction. */
     struct proc *p = myproc();
     uint64 vadd = r_sepc();
-    uint64 padd = walkaddr((p->pagetable, vadd) | vaddr & 0xFFF);
+    uint64 padd = walkaddr(p->pagetable, vadd) | (vadd & 0xFFF);
 
     
     uint32 taddr = *((uint32*)(padd));
 
     /* Retrieve all required values from the instruction */
-    // uint64 addr     = 0;
-    uint32 opcode = taddr & 0x7F;      
+    uint64 addr     = p->trapframe->epc;;
+    uint32 op = taddr & 0x7F;      
     uint32 rd = (taddr >> 7) & 0x1F;   
     uint32 funct3 = (taddr >> 12) & 0x7;
     uint32 rs1 = (taddr >> 15) & 0x1F; 
@@ -100,7 +100,7 @@ void trap_and_emulate(void) {
         vm_state.sstatus.val = vm_state.sstatus.val & (~SPIE_FL);
         vm_state.sstatus.val = vm_state.sstatus.val | (SPIE_bit >> 4);
 
-        p->trapframe->epc = vm.sepc.val;
+        p->trapframe->epc = vm_state.sepc.val;
 
         vm_state.exec_mode = nexec;
         /* Print the statement */
@@ -114,12 +114,12 @@ void trap_and_emulate(void) {
 
         vm_state.mstatus.val = vm_state.mstatus.val & (~MPP_FL);
 
-        uint64 SPIE_bit = vm_state.sstatus.val & SPIE_FL;
+        uint64 MPIE_bit = vm_state.sstatus.val & MPIE_FL;
         vm_state.mstatus.val = vm_state.mstatus.val & (~MIE_FL);
         vm_state.mstatus.val = vm_state.mstatus.val & (~MPIE_FL);
         vm_state.mstatus.val = vm_state.mstatus.val | (MPIE_bit >> 4);
 
-        p->trapframe->epc = vm.mepc.val;
+        p->trapframe->epc = vm_state.mepc.val;
 
         vm_state.exec_mode = nexec;
         /* Print the statement */
@@ -192,10 +192,10 @@ void trap_and_emulate_init(void) {
 	vm_state.totalregs[2] = vm_state.utvec;
 
     // User trap handling
-    vm_state.uscrtach.code = 0x040;
-    vm_state.uscrtach.mode = U_MODE;
-    vm_state.uscrtach.val = 0;
-	vm_state.totalregs[3] = vm_state.uscrtach;
+    vm_state.uscratch.code = 0x040;
+    vm_state.uscratch.mode = U_MODE;
+    vm_state.uscratch.val = 0;
+	vm_state.totalregs[3] = vm_state.uscratch;
 
     vm_state.uepc.code = 0x041;
     vm_state.uepc.mode = U_MODE;
@@ -364,7 +364,7 @@ void trap_and_emulate_init(void) {
     vm_state.mpmp2.val = 0;
 	vm_state.totalregs[35] = vm_state.mpmp2;
 
-    vm_state->exec_mode = M_MODE;
+    vm_state.exec_mode = M_MODE;
 
 
     
