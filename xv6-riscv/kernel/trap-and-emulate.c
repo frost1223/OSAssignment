@@ -99,7 +99,7 @@ void trap_and_emulate(void) {
 
         vm_state.sstatus.val = vm_state.sstatus.val & (~SPP_FL);
 
-        uint64 SPIE_bit = vm_state.sstatus.val & SPIE_FL;
+        uint64 SPIE_bit = vm_state.mstatus.val & SPIE_FL;
         vm_state.sstatus.val = vm_state.sstatus.val & (~SIE_FL);
         vm_state.sstatus.val = vm_state.sstatus.val & (~SPIE_FL);
         vm_state.sstatus.val = vm_state.sstatus.val | (SPIE_bit >> 4);
