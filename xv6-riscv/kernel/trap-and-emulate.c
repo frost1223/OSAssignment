@@ -113,7 +113,7 @@ void trap_and_emulate(void) {
         vm_state.exec_mode = nexec;
         }else {
         setkilled(p);
-    
+        }
 
     // if (vm_state.exec_mode >= S_MODE){
     //     int new_mode = (vm_state.totalregs[8].val >> 8) & 0x1;
@@ -191,7 +191,7 @@ void trap_and_emulate(void) {
             }
             break;
         }
-    }
+    
 
     p->trapframe->epc += 4;
     }
@@ -209,8 +209,8 @@ void trap_and_emulate(void) {
                 setkilled(p);
             }
             break;
-        }
-    //}
+        
+    }
 
     p->trapframe->epc += 4;
     }
