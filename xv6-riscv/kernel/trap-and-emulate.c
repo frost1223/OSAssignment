@@ -113,7 +113,7 @@ void trap_and_emulate(void) {
     }
         
     }else if (funct3 == 0x0 && uimm == 0x302){
-        if (vm_state.exec_mode == M_MODE){
+        if (vm_state.exec_mode >= M_MODE){
         int nexec = (vm_state.mstatus.val >> 11) & 0x1;
 
         vm_state.mstatus.val = vm_state.mstatus.val & (~MPP_FL);
