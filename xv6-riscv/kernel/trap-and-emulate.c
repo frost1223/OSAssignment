@@ -129,6 +129,9 @@ void trap_and_emulate(void) {
 
     }else if (funct3 == 0x1) {
         //csrw
+        /* Print the statement */
+        printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
+                addr, op, rd, funct3, rs1, uimm);
         for (int i=0 ; i<36 ; i++) {
         if (vm_state.totalregs[i].code == uimm) {
             if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
@@ -150,6 +153,9 @@ void trap_and_emulate(void) {
     }
     else if(funct3 == 0x2){
         //csrr
+        /* Print the statement */
+        printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
+                addr, op, rd, funct3, rs1, uimm);
         for (int i=0 ; i<36 ; i++) {
         if (vm_state.totalregs[i].code == uimm) {
             if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
@@ -169,9 +175,9 @@ void trap_and_emulate(void) {
         setkilled(p);
     }
 
-    /* Print the statement */
-    printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
-                addr, op, rd, funct3, rs1, uimm);
+    // /* Print the statement */
+    // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
+    //             addr, op, rd, funct3, rs1, uimm);
 }
 
 void trap_and_emulate_init(void) {
