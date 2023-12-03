@@ -62,8 +62,12 @@ void trap_and_emulate_ecall() {
     struct proc *p = myproc();
     printf("(EC at %p)\n", p->trapframe->epc);
 
-    vm_state.sepc.val = p->trapframe->epc;
-    p->trapframe->epc = vm_state.stvec.val;
+    // vm_state.sepc.val = p->trapframe->epc;
+    // p->trapframe->epc = vm_state.stvec.val;
+    // vm_state.exec_mode = S_MODE;
+
+    vm_state.totalregs[14].val = p->trapframe->epc;
+    p->trapframe->epc = vm_reg.totalregs[12].val;
     vm_state.exec_mode = S_MODE;
 }
 
