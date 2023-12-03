@@ -111,6 +111,7 @@ void trap_and_emulate(void) {
         p->trapframe->epc = vm_state.totalregs[14].val;
 
         vm_state.exec_mode = nexec;
+        }
 
     // if (vm_state.exec_mode >= S_MODE){
     //     int new_mode = (vm_state.totalregs[8].val >> 8) & 0x1;
