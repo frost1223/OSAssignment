@@ -118,7 +118,7 @@ void trap_and_emulate(void) {
 
         vm_state.mstatus.val = vm_state.mstatus.val & (~MPP_FL);
 
-        uint64 MPIE_bit = vm_state.sstatus.val & MPIE_FL;
+        uint64 MPIE_bit = vm_state.mstatus.val & MPIE_FL;
         vm_state.mstatus.val = vm_state.mstatus.val & (~MIE_FL);
         vm_state.mstatus.val = vm_state.mstatus.val & (~MPIE_FL);
         vm_state.mstatus.val = vm_state.mstatus.val | (MPIE_bit >> 4);
