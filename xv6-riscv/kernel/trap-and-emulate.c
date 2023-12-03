@@ -177,20 +177,20 @@ void trap_and_emulate(void) {
         // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
         //         addr, op, rd, funct3, rs1, uimm);
         for (int i=0 ; i<36 ; i++) {
-        if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-            // if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+        if (vm_state.totalregs[i].code == uimm ) {
+            if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
                 uint64* bp = rs1 + &(p->trapframe->ra) - 1;
                 vm_state.totalregs[i].val = (*bp);
 
-                // if (*bp == 0x0 && vm_state.totalregs[i].code == 0xF11) {
-                //     printf("Killing VM due to mvendorid being set to 0x0\n");
-                //     setkilled(p);
-                // }
-            // } else {
-            //     setkilled(p);
+                if (*bp == 0x0 && vm_state.totalregs[i].code == 0xF11) {
+                    printf("Killing VM due to mvendorid being set to 0x0\n");
+                    setkilled(p);
+                }
+            } else {
+                setkilled(p);
             }
             break;
-        
+        }
         }
     
 
@@ -202,17 +202,17 @@ void trap_and_emulate(void) {
         // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
         //         addr, op, rd, funct3, rs1, uimm);
         for (int i=0 ; i<36 ; i++) {
-        if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-            // if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+        if (vm_state.totalregs[i].code == uimm) {
+            if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
                 uint64 *d = rd + &(p->trapframe->ra) - 1;
                 *d = vm_state.totalregs[i].val;
-            // } else {
-            //     setkilled(p);
+            } else {
+                setkilled(p);
             }
             break;
         
     }
-        // }
+        }
 
     p->trapframe->epc += 4;
     }
