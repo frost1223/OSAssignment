@@ -192,12 +192,15 @@ void trap_and_emulate(void) {
         //     break;
         // }
         // }
+        int c = 0; 
 
         int codeToMode(int code) {
     for (int i = 0; i < 36; ++i) {
         if (vm_state.totalregs[i].code == code) {
             return vm_state.totalregs[i].mode;
+            c = i;
         }
+        break;
     }
     return -1; // Return a value indicating code not found (assuming mode cannot be negative)
 }
@@ -206,7 +209,7 @@ int mode = codeToMode(uimm);
 
 if (mode != -1 && vm_state.exec_mode >= mode) {
     uint64* bp = rs1 + &(p->trapframe->ra) - 1;
-    vm_state.totalregs[i].val = (*bp);
+    vm_state.totalregs[c].val = (*bp);
 
     if (*bp == 0x0 && uimm == 0xF11) {
         printf("Killing VM due to mvendorid being set to 0x0\n");
