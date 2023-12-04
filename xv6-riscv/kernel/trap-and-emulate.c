@@ -107,7 +107,7 @@ void trap_and_emulate(void) {
     uint32 rs1 = (taddr >> 15) & 0x1F; 
     uint32 uimm = (taddr >> 20) & 0xFFF;
 
-    int value = codeToVal(uimm);
+    // int value = codeToVal(uimm);
 
     /* Print the statement */
         printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
