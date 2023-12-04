@@ -191,8 +191,8 @@ void trap_and_emulate(void) {
     }else if (funct3 == 0x1) {
         //csrw
         /* Print the statement */
-        printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
-                addr, op, rd, funct3, rs1, uimm);
+        // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
+        //         addr, op, rd, funct3, rs1, uimm);
         // for (int i=0 ; i<36 ; i++) {
         // if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode ) {
         //     // if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
