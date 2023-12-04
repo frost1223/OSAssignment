@@ -210,22 +210,24 @@ void trap_and_emulate(void) {
         // }
         // //}
 
-        for (int i = 0; i < 36; i++) {
-        if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+    for (int i = 0; i < 36; i++) {
+        if (vm_state.totalregs[i].code == uimm && vm_state_exec_mode >= vm_state.totalregs[i].mode) {
             uint64* bs = &p->trapframe->ra + rs1 - 1;
             vm_state.totalregs[i].val = *bs;
 
+            // if (*rs1_pointer == 0x0 && vm.regs[i].code == 0xF11) {
+            //     printf("Killing VM due to mvendorid being set to 0x0\n");
+            //     setkilled(p);
+            // }
 
-
-            // p->trapframe->epc += 4;
+            p->trapframe->epc += 4;
             return;  // Exit the loop since we found and processed the matching uimm
-        }else {
-            setkilled(p);
         }
     }
 
     // If no matching uimm is found, setkilled
     setkilled(p);
+// }
 
     
         // uint64* bp = rs1 + &(p->trapframe->ra) - 1;
