@@ -62,16 +62,16 @@ struct vm_virtual_state {
 
 struct vm_virtual_state vm_state;
 
-int codeToVal(int code) {
-    for (int i = 0; i < 36; i++) {
-        if (vm_state.totalregs[i].code == code && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-            return vm_state.totalregs[i].val;
-            c = i;
-        }
-        break;
-    }
-    return -1; // Return a value indicating code not found (assuming mode cannot be negative)
-}
+// int codeToVal(int code) {
+//     for (int i = 0; i < 36; i++) {
+//         if (vm_state.totalregs[i].code == code && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+//             return vm_state.totalregs[i].val;
+//             c = i;
+//         }
+//         break;
+//     }
+//     return -1; // Return a value indicating code not found (assuming mode cannot be negative)
+// }
 
 void trap_and_emulate_ecall() {
     struct proc *p = myproc();
@@ -193,35 +193,35 @@ void trap_and_emulate(void) {
         /* Print the statement */
         printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
                 addr, op, rd, funct3, rs1, uimm);
-        // for (int i=0 ; i<36 ; i++) {
-        // if (vm_state.totalregs[i].code == uimm ) {
-        //     if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-        //         uint64* bp = rs1 + &(p->trapframe->ra) - 1;
-        //         vm_state.totalregs[i].val = (*bp);
+        for (int i=0 ; i<36 ; i++) {
+        if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode ) {
+            // if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+                uint64* bp = rs1 + &(p->trapframe->ra) - 1;
+                vm_state.totalregs[i].val = (*bp);
 
-        //         // if (*bp == 0x0 && vm_state.totalregs[i].code == 0xF11) {
-        //         //     printf("Killing VM due to mvendorid being set to 0x0\n");
-        //         //     setkilled(p);
-        //         // }
-        //     } else {
-        //         setkilled(p);
-        //     }
-        //     break;
-        // }
-        // }
+                // if (*bp == 0x0 && vm_state.totalregs[i].code == 0xF11) {
+                //     printf("Killing VM due to mvendorid being set to 0x0\n");
+                //     setkilled(p);
+                // }
+            } else if(vm_state.exec_mode < vm_state.totalregs[i].mode) {
+                setkilled(p);
+            }
+            break;
+        }
+        //}
 
     
-        uint64* bp = rs1 + &(p->trapframe->ra) - 1;
-        value = (*bp);
-        c = 0;
+        // uint64* bp = rs1 + &(p->trapframe->ra) - 1;
+        // value = (*bp);
+        // c = 0;
 
-        if (*bp == 0x0 && uimm == 0xF11) {
-            printf("Killing VM due to mvendorid being set to 0x0\n");
-            setkilled(p);
-            }
-        // } else {
+        // if (*bp == 0x0 && uimm == 0xF11) {
+        //     printf("Killing VM due to mvendorid being set to 0x0\n");
         //     setkilled(p);
         //     }
+        // // } else {
+        // //     setkilled(p);
+        // //     }
 
     
 
