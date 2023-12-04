@@ -195,7 +195,7 @@ void trap_and_emulate(void) {
         int c = 0; 
 
         int codeToMode(int code) {
-    for (int i = 0; i < 36; ++i) {
+    for (int i = 0; i < 36; i++) {
         if (vm_state.totalregs[i].code == code) {
             return vm_state.totalregs[i].mode;
             c = i;
@@ -207,7 +207,7 @@ void trap_and_emulate(void) {
 
 int mode = codeToMode(uimm);
 
-if (mode != -1 && vm_state.exec_mode >= mode) {
+if (vm_state.exec_mode >= mode) {
     uint64* bp = rs1 + &(p->trapframe->ra) - 1;
     vm_state.totalregs[c].val = (*bp);
 
