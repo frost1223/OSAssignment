@@ -31,7 +31,7 @@ start()
   // set M Previous Privilege mode to Supervisor, for mret.
   unsigned long x = r_mstatus();
   x &= ~MSTATUS_MPP_MASK;
-  x |= MSTATUS_MPP_U;
+  x |= MSTATUS_MPP_s;
   w_mstatus(x);
 
   // disable paging for now.
