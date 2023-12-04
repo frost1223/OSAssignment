@@ -219,8 +219,6 @@ void trap_and_emulate(void) {
 
             p->trapframe->epc += 4;
             return;  // Exit the loop since we found and processed the matching uimm
-        }else {
-            setkilled(p);
         }
     }
 
