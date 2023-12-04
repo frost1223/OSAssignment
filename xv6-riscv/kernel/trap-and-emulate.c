@@ -217,7 +217,7 @@ void trap_and_emulate(void) {
 
 
 
-            // p->trapframe->epc += 4;
+            p->trapframe->epc += 4;
             return;  // Exit the loop since we found and processed the matching uimm
         }else {
             setkilled(p);
@@ -242,7 +242,7 @@ void trap_and_emulate(void) {
 
     
 
-    p->trapframe->epc += 4;
+    // p->trapframe->epc += 4;
     }
     else if(funct3 == 0x2){
         //csrr
