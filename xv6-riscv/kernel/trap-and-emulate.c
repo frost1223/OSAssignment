@@ -281,7 +281,7 @@ void trap_and_emulate(void) {
     // p->trapframe->epc += 4;
     }
     else{
-        printf("trap_and_emulate: invalid\n");
+        
         setkilled(p);
     }
 
