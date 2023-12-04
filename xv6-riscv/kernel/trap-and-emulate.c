@@ -203,7 +203,7 @@ void trap_and_emulate(void) {
                 //     printf("Killing VM due to mvendorid being set to 0x0\n");
                 //     setkilled(p);
                 // }
-            } else if(vm_state.exec_mode < vm_state.totalregs[i].mode) {
+            } else {
                 setkilled(p);
             }
             break;
