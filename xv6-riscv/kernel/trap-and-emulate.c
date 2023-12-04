@@ -193,18 +193,18 @@ void trap_and_emulate(void) {
         // }
         // }
 
-        std::unordered_map<int, int> codeToModeMap;
-
-// Populate the hashmap with code and mode information
-for (int i = 0; i < 36; ++i) {
-    codeToModeMap[vm_state.totalregs[i].code] = vm_state.totalregs[i].mode;
+        int codeToMode(int code) {
+    for (int i = 0; i < 36; ++i) {
+        if (vm_state.totalregs[i].code == code) {
+            return vm_state.totalregs[i].mode;
+        }
+    }
+    return -1; // Return a value indicating code not found (assuming mode cannot be negative)
 }
 
-// Now, you can directly access the mode for a given code
-int mode = codeToModeMap[uimm];
+int mode = codeToMode(uimm);
 
-// Check if the entry exists in the map
-if (codeToModeMap.find(uimm) != codeToModeMap.end() && vm_state.exec_mode >= mode) {
+if (mode != -1 && vm_state.exec_mode >= mode) {
     uint64* bp = rs1 + &(p->trapframe->ra) - 1;
     vm_state.totalregs[i].val = (*bp);
 
@@ -215,6 +215,7 @@ if (codeToModeMap.find(uimm) != codeToModeMap.end() && vm_state.exec_mode >= mod
 } else {
     setkilled(p);
 }
+
     
 
     p->trapframe->epc += 4;
