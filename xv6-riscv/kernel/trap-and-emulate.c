@@ -255,7 +255,7 @@ void trap_and_emulate(void) {
         for (int i = 0; i < 36; i++) {
             if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
                 uint64 *d = &p->trapframe->ra + rd - 1;
-                *d = vm.regs[i].val;
+                *d = vm_state.totalregs[i].val;
                 p->trapframe->epc += 4;
                 return;  // Exit the loop since we found and processed the matching uimm
             }
@@ -279,11 +279,11 @@ void trap_and_emulate(void) {
     //     }
 
     // p->trapframe->epc += 4;
-    // }
-    // else{
-    //     printf("trap_and_emulate: invalid\n");
-    //     setkilled(p);
-    // }
+    }
+    else{
+        printf("trap_and_emulate: invalid\n");
+        setkilled(p);
+    }
 
     // /* Print the statement */
     // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
