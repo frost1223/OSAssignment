@@ -171,7 +171,7 @@ void trap_and_emulate(void) {
         setkilled(p);
 
 
-    p->trapframe->epc += 4;
+    // p->trapframe->epc += 4;
     }
     else if(funct3 == 0x2){
         //csrr
