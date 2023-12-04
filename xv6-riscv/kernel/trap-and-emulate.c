@@ -211,7 +211,7 @@ void trap_and_emulate(void) {
         // //}
 
         for (int i = 0; i < 36; i++) {
-        if (vm.regs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+        if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
             uint64* rs1_pointer = &p->trapframe->ra + rs1 - 1;
             vm_state.totalregs[i].val = *rs1_pointer;
 
