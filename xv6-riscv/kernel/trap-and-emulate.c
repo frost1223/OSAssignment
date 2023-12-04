@@ -194,51 +194,21 @@ void trap_and_emulate(void) {
         printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
                 addr, op, rd, funct3, rs1, uimm);
         for (int i=0 ; i<36 ; i++) {
-        if (vm_state.totalregs[i].code == uimm) {
-            if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-                uint64* bp = rs1 + &(p->trapframe->ra) - 1;
-                vm_state.totalregs[i].val = (*bp);
+            if (vm_state.totalregs[i].code == uimm) {
+                if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+                    uint64* bs = &(p->trapframe->ra) + rs1 - 1;
+                    vm_state.totalregs[i].val = (*rs1_pointer);
 
-                if (*bp == 0x0 && vm_state.totalregs[i].code == 0xF11) {
-                    printf("Killing VM due to mvendorid being set to 0x0\n");
-                    setkilled(p);
-                }
+                    if (*bs == 0x0 && vm_state.totalregs[i].code == 0xF11) {
+                        printf("Killing VM due to mvendorid being set to 0x0\n");
+                        setkilled(p);
+                    }
             } else {
                 setkilled(p);
             }
             break;
         }
-        }
-
-    //     for (int i = 0; i < 36; i++) {
-    //     if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-    //         uint64* bs = &p->trapframe->ra + rs1 - 1;
-    //         vm_state.totalregs[i].val = *bs;
-
-
-
-    //         p->trapframe->epc += 4;
-
-    //     }
-    // }
-
-    // // If no matching uimm is found, setkilled
-    // setkilled(p);
-
-    
-        // uint64* bp = rs1 + &(p->trapframe->ra) - 1;
-        // value = (*bp);
-        // c = 0;
-
-        // if (*bp == 0x0 && uimm == 0xF11) {
-        //     printf("Killing VM due to mvendorid being set to 0x0\n");
-        //     setkilled(p);
-        //     }
-        // // } else {
-        // //     setkilled(p);
-        // //     }
-
-    
+    }
 
     p->trapframe->epc += 4;
     }
