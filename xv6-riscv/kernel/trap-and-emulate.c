@@ -23,6 +23,10 @@ struct vm_reg {
 # define S_MODE 1
 # define M_MODE 2
 
+int c = 0; 
+
+
+
 // Keep the virtual state of the VM's privileged registers
 struct vm_virtual_state {
     // User trap setup
@@ -58,6 +62,17 @@ struct vm_virtual_state {
 
 struct vm_virtual_state vm_state;
 
+int codeToMode(int code) {
+    for (int i = 0; i < 36; i++) {
+        if (vm_state.totalregs[i].code == code) {
+            return vm_state.totalregs[i].mode;
+            c = i;
+        }
+        break;
+    }
+    return -1; // Return a value indicating code not found (assuming mode cannot be negative)
+}
+
 void trap_and_emulate_ecall() {
     struct proc *p = myproc();
     printf("(EC at %p)\n", p->trapframe->epc);
@@ -91,6 +106,8 @@ void trap_and_emulate(void) {
     uint32 funct3 = (taddr >> 12) & 0x7;
     uint32 rs1 = (taddr >> 15) & 0x1F; 
     uint32 uimm = (taddr >> 20) & 0xFFF;
+
+    int mode = codeToMode(uimm);
 
     /* Print the statement */
         printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
@@ -192,32 +209,18 @@ void trap_and_emulate(void) {
         //     break;
         // }
         // }
-        int c = 0; 
 
-        int codeToMode(int code) {
-    for (int i = 0; i < 36; i++) {
-        if (vm_state.totalregs[i].code == code) {
-            return vm_state.totalregs[i].mode;
-            c = i;
-        }
-        break;
-    }
-    return -1; // Return a value indicating code not found (assuming mode cannot be negative)
-}
+        if (vm_state.exec_mode >= mode) {
+            uint64* bp = rs1 + &(p->trapframe->ra) - 1;
+            vm_state.totalregs[c].val = (*bp);
 
-int mode = codeToMode(uimm);
-
-if (vm_state.exec_mode >= mode) {
-    uint64* bp = rs1 + &(p->trapframe->ra) - 1;
-    vm_state.totalregs[c].val = (*bp);
-
-    if (*bp == 0x0 && uimm == 0xF11) {
-        printf("Killing VM due to mvendorid being set to 0x0\n");
-        setkilled(p);
-    }
-} else {
-    setkilled(p);
-}
+            if (*bp == 0x0 && uimm == 0xF11) {
+                printf("Killing VM due to mvendorid being set to 0x0\n");
+                setkilled(p);
+            }
+        } else {
+            setkilled(p);
+            }
 
     
 
