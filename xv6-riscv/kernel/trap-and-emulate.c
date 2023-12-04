@@ -76,6 +76,7 @@ struct vm_virtual_state vm_state;
 void trap_and_emulate_ecall() {
     struct proc *p = myproc();
     printf("(EC at %p)\n", p->trapframe->epc);
+    vm_state.exec_mode = S_MODE;
 
     // vm_state.sepc.val = p->trapframe->epc;
     // p->trapframe->epc = vm_state.stvec.val;
@@ -83,7 +84,7 @@ void trap_and_emulate_ecall() {
 
     vm_state.totalregs[14].val = p->trapframe->epc;
     p->trapframe->epc = vm_state.totalregs[12].val;
-    vm_state.exec_mode = S_MODE;
+    
 }
 
 // In your ECALL, add the following for prints
@@ -158,7 +159,7 @@ void trap_and_emulate(void) {
 
         for (int i = 0; i < 36; i++) {
             if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-                uint64* bs = &p->trapframe->ra + rs1 - 1;
+                uint64* bs = rs + &p->trapframe->ra - 1;
                 vm_state.totalregs[i].val = *bs;
 
             p->trapframe->epc += 4;
@@ -168,22 +169,7 @@ void trap_and_emulate(void) {
 
     // If no matching uimm is found, setkilled
         setkilled(p);
-// }
 
-    
-        // uint64* bp = rs1 + &(p->trapframe->ra) - 1;
-        // value = (*bp);
-        // c = 0;
-
-        // if (*bp == 0x0 && uimm == 0xF11) {
-        //     printf("Killing VM due to mvendorid being set to 0x0\n");
-        //     setkilled(p);
-        //     }
-        // // } else {
-        // //     setkilled(p);
-        // //     }
-
-    
 
     p->trapframe->epc += 4;
     }
@@ -195,7 +181,7 @@ void trap_and_emulate(void) {
 
         for (int i = 0; i < 36; i++) {
             if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-                uint64 *d = &p->trapframe->ra + rd - 1;
+                uint64 *d = rd + &p->trapframe->ra - 1;
                 *d = vm_state.totalregs[i].val;
                 p->trapframe->epc += 4;
                 return;  // Exit the loop since we found and processed the matching uimm
