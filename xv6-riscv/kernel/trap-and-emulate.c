@@ -251,25 +251,39 @@ void trap_and_emulate(void) {
         // /* Print the statement */
         // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
         //         addr, op, rd, funct3, rs1, uimm);
-        for (int i=0 ; i<36 ; i++) {
-        if (vm_state.totalregs[i].code == uimm) {
-            if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
-                uint64 *d = rd + &(p->trapframe->ra) - 1;
-                *d = vm_state.totalregs[i].val;
-            } else {
-                setkilled(p);
+
+        for (int i = 0; i < 36; i++) {
+            if (vm_state.totalregs[i].code == uimm && vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+                uint64 *d = &p->trapframe->ra + rd - 1;
+                *d = vm.regs[i].val;
+                p->trapframe->epc += 4;
+                return;  // Exit the loop since we found and processed the matching uimm
             }
-            break;
-        
-    }
         }
 
-    p->trapframe->epc += 4;
-    }
-    else{
-        printf("trap_and_emulate: invalid\n");
-        setkilled(p);
-    }
+    // If no matching uimm is found, setkilled
+    setkilled(p);
+// }
+
+    //     for (int i=0 ; i<36 ; i++) {
+    //     if (vm_state.totalregs[i].code == uimm) {
+    //         if (vm_state.exec_mode >= vm_state.totalregs[i].mode) {
+    //             uint64 *d = rd + &(p->trapframe->ra) - 1;
+    //             *d = vm_state.totalregs[i].val;
+    //         } else {
+    //             setkilled(p);
+    //         }
+    //         break;
+        
+    // }
+    //     }
+
+    // p->trapframe->epc += 4;
+    // }
+    // else{
+    //     printf("trap_and_emulate: invalid\n");
+    //     setkilled(p);
+    // }
 
     // /* Print the statement */
     // printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
