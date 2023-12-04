@@ -96,6 +96,7 @@ void trap_and_emulate(void) {
     struct proc *p = myproc();
     uint64 vadd = r_sepc();
     uint64 padd = walkaddr(p->pagetable, vadd) | (vadd & 0xFFF);
+    
 
     
     uint32 taddr = *((uint32*)(padd));
@@ -113,6 +114,10 @@ void trap_and_emulate(void) {
     /* Print the statement */
         printf("(PI at %p) op = %x, rd = %x, funct3 = %x, rs1 = %x, uimm = %x\n", 
                 addr, op, rd, funct3, rs1, uimm);
+
+    if(vm_state.totalregs[20].val == 0){
+        setkilled(p);
+    }
 
     if (funct3 == 0x0 && uimm == 0X102){
 
